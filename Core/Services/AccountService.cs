@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core.DTO;
+using Core.DTO.Identity;
 using Core.Exceptions;
 using Core.Helpers;
 using Core.Interfaces.CustomServices;
@@ -36,7 +37,6 @@ namespace Core.Services
                 LastName = data.LastName
             };
             var result = await _userManager.CreateAsync(user, data.Password);
-
             if (!result.Succeeded)
             {
                 StringBuilder messageBuilder = new StringBuilder();
@@ -48,6 +48,43 @@ namespace Core.Services
 
                 throw new HttpException(messageBuilder.ToString(), System.Net.HttpStatusCode.BadRequest);
             }
+        }
+
+        public async Task<AuthorizationDto> LoginAsync(string email, string password)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null || !await _userManager.CheckPasswordAsync(user, password))
+            {
+                throw new HttpException("Invalid login or password.", System.Net.HttpStatusCode.BadRequest);
+            }
+
+            return await GenerateToken(user);
+        }
+
+        public Task LogoutAsync(UserLogoutDto userTokensDTO)
+        {
+            throw new NotImplementedException();
+            //var refreshToken = await _refreshTokenRepository
+            //    .GetBySpecAsync(new RefreshTokenSpecification.GetByToken(userLogoutDTO.RefreshToken));
+
+            //ExceptionMethods.RefreshTokenNullCheck(refreshToken);
+
+            //await _refreshTokenRepository.DeleteAsync(refreshToken);
+        }
+
+        public async Task<AuthorizationDto> GenerateToken(ApplicationUser user)
+        {
+            var claims = _jwtService.SetClaims(user);
+
+            var token = _jwtService.CreateToken(user);
+
+            var tokens = new AuthorizationDto()
+            {
+                Token = token,
+            };
+
+            return tokens;
         }
     }
 }

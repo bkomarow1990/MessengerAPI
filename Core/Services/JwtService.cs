@@ -18,9 +18,10 @@ namespace Core.Services
     {
         private readonly IOptions<JwtOptions> _jwtOptions;
         private readonly UserManager<ApplicationUser> _userManager;
-        public JwtService(IOptions<JwtOptions> jwtOptions)
+        public JwtService(IOptions<JwtOptions> jwtOptions, UserManager<ApplicationUser> userManager)
         {
             this._jwtOptions = jwtOptions;
+            _userManager = userManager;
         }
         public string CreateToken(ApplicationUser user)
         {

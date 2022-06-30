@@ -12,11 +12,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Core;
+using Core.Helpers;
+using Core.Validators;
 using Entities;
 using Infrastructure;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using FluentValidation.AspNetCore;
 
 namespace MessengerAPI
 {
@@ -38,7 +43,15 @@ namespace MessengerAPI
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequiredLength = 8;
             }).AddEntityFrameworkStores<AppEFContext>().AddDefaultTokenProviders();
-            services.AddControllers();
+            services.Configure<JwtOptions>(Configuration.GetSection(nameof(JwtOptions)));
+            services.AddFluentValidation(x =>
+                x.RegisterValidatorsFromAssemblyContaining<RegisterUserDtoValidator>());
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Include;
+                options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+            });
             services.AddCustomServices();
             services.AddAutoMapper();
             services.AddRepository();
