@@ -52,6 +52,7 @@ namespace MessengerAPI
                 options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Include;
                 options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
             });
+            services.AddCors();
             services.AddCustomServices();
             services.AddAutoMapper();
             services.AddRepository();

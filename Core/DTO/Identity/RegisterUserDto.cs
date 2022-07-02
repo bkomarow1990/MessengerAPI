@@ -15,5 +15,6 @@ namespace Core.DTO
         public string LastName { get; set; }
         public string Photo { get; set; }
         public string Phone { get; set; }
+        public string RecaptchaToken { get; set; }
     }
 }
