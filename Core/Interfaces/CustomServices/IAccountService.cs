@@ -15,6 +15,8 @@ namespace Core.Interfaces.CustomServices
         Task<AuthorizationDto> LoginAsync(string email, string password);
         //Task<AuthorizationDTO> RefreshTokenAsync(AuthorizationDTO userTokensDTO);
         Task LogoutAsync(UserLogoutDto userTokensDTO);
+        Task<AuthorizationDto> GenerateToken(ApplicationUser user);
+        Task<ApplicationUser> AuthenticateGoogleUserAsync(GoogleUserRequest request);
         //Task SentResetPasswordTokenAsync(string userEmail);
     }
 }

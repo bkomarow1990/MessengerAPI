@@ -22,6 +22,10 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 
 namespace MessengerAPI
 {
@@ -44,6 +48,28 @@ namespace MessengerAPI
                 options.Password.RequiredLength = 8;
             }).AddEntityFrameworkStores<AppEFContext>().AddDefaultTokenProviders();
             services.Configure<JwtOptions>(Configuration.GetSection(nameof(JwtOptions)));
+            //services.AddAuthentication(options =>
+            //{
+            //    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            //}).AddCookie().AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+            //{
+            //    options.ClientId = Configuration["Google:ClientId"];
+            //    options.ClientSecret = Configuration["Google:ClientSecret"];
+            //    options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
+            //});
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
+            });
+            services.AddAuthentication().AddGoogle(opts =>
+            {
+                opts.ClientId = Configuration["Google:ClientId"];
+                opts.ClientSecret = Configuration["Google:ClientSecret"];
+                opts.SignInScheme = IdentityConstants.ExternalScheme;
+            });
             services.AddFluentValidation(x =>
                 x.RegisterValidatorsFromAssemblyContaining<RegisterUserDtoValidator>());
             services.AddControllers().AddNewtonsoftJson(options =>
@@ -79,7 +105,7 @@ namespace MessengerAPI
             app.UseRouting();
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
             app.UseAuthorization();
-
+            app.UseAuthentication();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

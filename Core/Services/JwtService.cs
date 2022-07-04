@@ -45,6 +45,23 @@ namespace Core.Services
             );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+        //public async Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(ExternalAuthDto externalAuth)
+        //{
+        //    try
+        //    {
+        //        var settings = new GoogleJsonWebSignature.ValidationSettings()
+        //        {
+        //            Audience = new List<string>() { _goolgeSettings.GetSection("clientId").Value }
+        //        };
+        //        var payload = await GoogleJsonWebSignature.ValidateAsync(externalAuth.IdToken, settings);
+        //        return payload;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //log an exception
+        //        return null;
+        //    }
+        //}
         public IEnumerable<Claim> SetClaims(ApplicationUser user)
         {
             var claims = new List<Claim>

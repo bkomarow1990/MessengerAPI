@@ -13,7 +13,7 @@ namespace Core.DTO
         public string ConfirmPassword { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Photo { get; set; }
+        public string Image { get; set; }
         public string Phone { get; set; }
         public string RecaptchaToken { get; set; }
     }

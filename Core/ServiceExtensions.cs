@@ -20,6 +20,7 @@ namespace Core
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IJwtService, JwtService>();
+            services.AddScoped<IRecaptchaService, RecaptchaService>();
         }
         public static void AddAutoMapper(this IServiceCollection services)
         {
