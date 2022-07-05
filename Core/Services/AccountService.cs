@@ -85,9 +85,9 @@ namespace Core.Services
                 Audience = new[] { _configuration["Google:ClientId"] }
             });
 
-            return await GetOrCreateExternalLoginUser(GoogleUserRequest.PROVIDER, payload.Subject, payload.Email, payload.GivenName, payload.FamilyName);
+            return await GetOrCreateExternalLoginUser(GoogleUserRequest.PROVIDER, payload.Subject, payload.Email, payload.GivenName, payload.FamilyName, payload.Picture);
         }
-        private async Task<ApplicationUser> GetOrCreateExternalLoginUser(string provider, string key, string email, string firstName, string lastName)
+        private async Task<ApplicationUser> GetOrCreateExternalLoginUser(string provider, string key, string email, string firstName, string lastName, string picture)
         {
             var user = await _userManager.FindByLoginAsync(provider, key);
             if (user != null)
@@ -102,6 +102,7 @@ namespace Core.Services
                     FirstName = firstName,
                     LastName = lastName,
                     Id = key,
+                    Image = picture
                 };
                 await _userManager.CreateAsync(user);
             }
